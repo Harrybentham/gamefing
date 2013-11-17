@@ -68,4 +68,19 @@ SDL_Surface* CCSS_load_and_resize_image(const char* filename, double width, doub
 	return opti;
 }
 
+SDL_Surface* CCSS_load_resize_and_rotate(const char* filename, double zoom, double angle){
+	// Temporary surface pointer
+	SDL_Surface* tmp = NULL;
+	// Optimized image
+	SDL_Surface* opti = NULL;
+	
+	tmp = IMG_Load(filename);
+	if(tmp!=NULL){
+		tmp = rotozoomSurface(tmp, angle, zoom, 1);
+		opti = SDL_DisplayFormatAlpha(tmp);		
+		SDL_FreeSurface(tmp);
+	}
+	return opti;
+}
+
 
