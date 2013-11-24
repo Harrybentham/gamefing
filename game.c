@@ -36,6 +36,7 @@ int main( void ){
 	SDL_Color text_color = WHITE;
 	// game data
 	int i=0;
+	int o=0;
 	int x=25,y=25;
 	int spawnx=25;
 	int spawny=25;
@@ -92,7 +93,7 @@ int main( void ){
 			ship.x=spawnx;
 			ship.y=spawny;
 			}
-		else if(ship.y+60>SCREEN_HEIGHT){
+		else if(ship.y+ship.h>SCREEN_HEIGHT){
 			ship.x=spawnx;
 			ship.y=spawny;
 			}
@@ -101,18 +102,20 @@ int main( void ){
 			ship.y=spawny;
 			ship.x=spawnx;
 			}
-		else if(ship.y+60>SCREEN_HEIGHT){
+		else if(ship.x+ship.w>SCREEN_WIDTH){
 			ship.y=spawny;
 			ship.x=spawnx;
 			}
 
 		for(i=ship.x; i<ship.x+ship.w; i++){
-			if(i>wall.x && i<=wall.x + wall.w){
+			for(o=ship.y; o<ship.y+ship.h; o++){
+				if(i>wall.x && i<wall.x + wall.w && o>wall.x && o<wall.y + wall.h){
 			ship.y=spawny;
 			ship.x=spawnx;	
 			}
-		else{
-		//do nothing;
+			else{
+			//do nothing;
+		}
 		}
 		}
 
