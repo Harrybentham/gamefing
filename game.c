@@ -30,6 +30,7 @@ int main( void ){
 	SDL_Surface* background = NULL;
 	SDL_Surface* wallpic = NULL;
 	SDL_Surface* character = NULL;
+	SDL_Surface* flag = NULL;
 	SDL_Event event;
 	// font
 	TTF_Font* font = NULL;
@@ -37,14 +38,22 @@ int main( void ){
 	// game data
 	int i=0;
 	int o=0;
+	int p=0;
+	int u=0;
 	int x=25,y=25;
 	int spawnx=25;
 	int spawny=25;
+	int move = 1;
 	box wall;
 	wall.w=60;
 	wall.h=60;
 	wall.x=220;
 	wall.y=220;
+	box mwall;
+	mwall.w=60;
+	mwall.h=60;
+	mwall.x=450;
+	mwall.y=150;
 	box ship;
 	ship.w=60;
 	ship.h=60;
@@ -69,6 +78,8 @@ int main( void ){
 	font = TTF_OpenFont( "./resources/font/creaminal.ttf", 14 );	
 	// load wallpic
 	wallpic = CCSS_load_and_resize_image("./resources/img/wall.jpg", 0.26, 0.26);
+	//load flag
+	flag = CCSS_load_and_resize_image("./resources/img/flag.jpg", 0.2, 0.2);
 
 	while(quit==FALSE){
 		starttick = SDL_GetTicks();
@@ -119,11 +130,44 @@ int main( void ){
 		}
 		}
 
+		for(p=ship.x; p<ship.x+ship.w; p++){
+			for(u=ship.y; u<ship.y+ship.h; u++){
+				if(p>mwall.x && p<mwall.x + mwall.w && u>mwall.x && u<mwall.y + mwall.h){
+			ship.y=spawny;
+			ship.x=spawnx;	
+			}
+			else{
+			//do nothing;
+
+		}
+		}
+		}
+		
+		if(mwall.y == 150){
+		move=1;
+		}
+		
+		if(mwall.y == 300){
+		move=0;
+		}
+
+		if(move == 0){
+		mwall.y-=5;
+		}
+
+		if(move == 1){
+		mwall.y+=5;
+		}
+
 
 		// Apply background to screen
 		CCSS_apply_surface(0, 0, background, screen);		
 		// Apply our character
 		CCSS_apply_surface(ship.x, ship.y, character, screen);
+		//apply moving wall
+		CCSS_apply_surface(mwall.x, mwall.y, wallpic, screen);
+		//Apply our flag
+		CCSS_apply_surface(580, 420, flag, screen);
 		// We print something
 		CCSS_apply_surface(wall.x, wall.y, wallpic, screen);
 		// Built Wall
@@ -140,6 +184,8 @@ int main( void ){
 	// Free background
 	SDL_FreeSurface( background );
 	SDL_FreeSurface( character );
+	SDL_FreeSurface( flag );
+	SDL_FreeSurface( wallpic );
 	// unload font
 	TTF_CloseFont(font);
 	
