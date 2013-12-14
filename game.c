@@ -38,27 +38,26 @@ int main( void ){
 	// game data
 	int i=0;
 	int o=0;
-	int p=0;
-	int u=0;
-	int x=25,y=25;
-	int spawnx=25;
-	int spawny=25;
-	int move = 1;
-	box wall;
-	wall.w=60;
-	wall.h=60;
-	wall.x=220;
-	wall.y=220;
-	box mwall;
-	mwall.w=60;
-	mwall.h=60;
-	mwall.x=450;
-	mwall.y=150;
+	int wallno=0;
+	int min[6]={0,0,0,0,120,240};
+	int max[6]={0,240,300,120,240,420};
+	int x=0,y=0;
+	int spawnx=0;
+	int spawny=0;
+
+	//wall move status 0=left or down, 1=right or up
+	int move[6] ={0,0,0,0,0,0};
+	
+	int wallw[]={0,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60};
+	int wallh[]={0,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60};
+	int wallx[]={0,240,360,576,480,240,0,60,180,180,300,300,420,420,420,420,480,576,60,120,180,240,300,0,60,120,180,180,180,300,300,360,420,480};
+	int wally[]={0,120,0,0,120,240,60,60,0,60,60,120,60,120,180,240,60,180,180,180,180,180,240,300,300,300,300,360,420,360,420,360,360,360};
+
 	box ship;
 	ship.w=60;
 	ship.h=60;
-	ship.x=25;
-	ship.y=25;
+	ship.x=0;
+	ship.y=0;
 	unsigned char *keystates;
 	int starttick, ticks;
 
@@ -69,6 +68,10 @@ int main( void ){
 		printf("Something went wrong!\n");
 		exit(-1);
 	}
+
+
+
+
 
 	// Load background image
 	background = CCSS_load_image("./resources/img/background.png");
@@ -120,58 +123,71 @@ int main( void ){
 
 		for(i=ship.x; i<ship.x+ship.w; i++){
 			for(o=ship.y; o<ship.y+ship.h; o++){
-				if(i>wall.x && i<wall.x + wall.w && o>wall.x && o<wall.y + wall.h){
-			ship.y=spawny;
-			ship.x=spawnx;	
+				for(wallno=0; wallno<sizeof(wallx)/sizeof(int); wallno++){
+					if(i>wallx[wallno] && i<wallx[wallno] + wallw[wallno] && o>wally[wallno] && o<wally[wallno] + wallh[wallno]){
+						ship.y=spawny;
+						ship.x=spawnx;	
+						}
+						else{
+						//do nothing;
+						}
+					}
+				}
 			}
-			else{
-			//do nothing;
-		}
-		}
-		}
 
-		for(p=ship.x; p<ship.x+ship.w; p++){
-			for(u=ship.y; u<ship.y+ship.h; u++){
-				if(p>mwall.x && p<mwall.x + mwall.w && u>mwall.x && u<mwall.y + mwall.h){
-			ship.y=spawny;
-			ship.x=spawnx;	
-			}
-			else{
-			//do nothing;
-
-		}
-		}
+		if(wallx[1] <= min[1]){
+		move[1]=1;
 		}
 		
-		if(mwall.y == 150){
-		move=1;
+		if(wallx[1] >= max[1]){
+		move[1]=0;
+		}
+
+		if(move[1] == 0){
+		wallx[1]-=2;
+		}
+
+		if(move[1] == 1){
+		wallx[1]+=2;
 		}
 		
-		if(mwall.y == 300){
-		move=0;
-		}
 
-		if(move == 0){
-		mwall.y-=5;
-		}
 
-		if(move == 1){
-		mwall.y+=5;
+	
+		for(wallno=2; wallno<6; wallno++){
+
+			if(wally[wallno] <= min[wallno]){
+			move[wallno]=1;
+			}
+		
+			if(wally[wallno] >= max[wallno]){
+			move[wallno]=0;
+			}
+
+			if(move[wallno] == 0){
+			wally[wallno]-=2;
+			}
+
+			if(move[wallno] == 1){
+			wally[wallno]+=2;
+			}
 		}
 
 
 		// Apply background to screen
-		CCSS_apply_surface(0, 0, background, screen);		
+		CCSS_apply_surface(0, 0, background, screen);
+
+		for(wallno=1; wallno<sizeof(wally)/sizeof(int); wallno++){
+		//apply walls
+		CCSS_apply_surface(wallx[wallno], wally[wallno], wallpic, screen);
+		}
 		// Apply our character
 		CCSS_apply_surface(ship.x, ship.y, character, screen);
-		//apply moving wall
-		CCSS_apply_surface(mwall.x, mwall.y, wallpic, screen);
 		//Apply our flag
 		CCSS_apply_surface(580, 420, flag, screen);
-		// We print something
-		CCSS_apply_surface(wall.x, wall.y, wallpic, screen);
 		// Built Wall
-		CCSS_print(400, 0, font, text_color, screen, "Position %d-%d", ship.x, ship.y); 
+		CCSS_print(400, 0, font, text_color, screen, "Position %d-%d", ship.x, ship.y);
+		CCSS_print(200, 300, font, text_color, screen, "Wall 1 = %d-%d, move=%d ",wallx[1], wally[1], move[1]); 
 		// Update screen
 		SDL_Flip( screen );
 		ticks = SDL_GetTicks() - starttick;
