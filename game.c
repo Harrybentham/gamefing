@@ -187,7 +187,7 @@ int main( void ){
 		CCSS_apply_surface(580, 420, flag, screen);
 		// Built Wall
 		CCSS_print(400, 0, font, text_color, screen, "Position %d-%d", ship.x, ship.y);
-		CCSS_print(200, 300, font, text_color, screen, "Wall 1 = %d-%d, move=%d ",wallx[1], wally[1], move[1]); 
+		//CCSS_print(200, 300, font, text_color, screen, "Wall 1 = %d-%d, move=%d ",wallx[1], wally[1], move[1]); 
 		// Update screen
 		SDL_Flip( screen );
 		ticks = SDL_GetTicks() - starttick;
