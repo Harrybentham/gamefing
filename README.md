@@ -22,7 +22,7 @@ cd ../../
 COMPILING OUR GAME
 ==================
 gcc game.c ./lib/ccss/ccss.a -o game.o -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf
-6
+
 PROXY CONFIGURATION
 ===================
 
